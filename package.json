@@ -7,17 +7,17 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
+    "start:prod": "node dist/main",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "database-tables-delete": "npm run typeorm -- schema:drop",
+    "database-tables-create": "npm run typeorm -- migration:run",
+    "database-tables-rollback": "npm run typeorm -- migration:revert",
+    "database-tables-recreate": "npm run database-tables-delete && npm run database-tables-create",
+    "database-migrations-create": "npm run typeorm -- migration:generate src/database/migrations/InitialMigration",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/database/data-source.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -26,9 +26,12 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.6",
     "@nestjs/throttler": "^6.5.0",
+    "@nestjs/typeorm": "^11.0.0",
+    "pg": "^8.19.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "typeorm": "^0.3.28"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.1",
