@@ -11,8 +11,13 @@
 
 ### SETUP DATABASE AND RUN APPLICATION
 
-- Setup postgreSQL database into your local system.
-- installed all the required dependencies with npm install
-- Update .env file with your database credentials
+1. installed all the required dependencies with npm install
 
-- For development run ```npm run start:dev```
+2. Create ```.env``` from `.env.example` then add values to all variables.
+
+3. Setup database and run scripts below before start application server:
+    - Run this command ```npm run database-migrations-create```
+    - Run this script ```npm run database-tables-delete```
+    - Run this script ```npm run database-tables-create```
+
+4. Start application in development, run script  ```npm run start:dev```
