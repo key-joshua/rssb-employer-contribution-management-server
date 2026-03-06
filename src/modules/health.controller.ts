@@ -10,10 +10,10 @@ export class HealthController {
 
   check() {
     return {
-    success: true,
-    status: HttpStatus.OK,
-    uptime: process.uptime(),
-    message: 'Welcome To Employer Contribution Server. Server Is Running',
+      success: true,
+      status: HttpStatus.OK,
+      uptime: process.uptime(),
+      message: 'Welcome to employer contribution server. Server is running',
     };
   }
 }
