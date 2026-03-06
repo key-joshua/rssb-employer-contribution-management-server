@@ -1,9 +1,8 @@
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-
-import { Employer } from './employer.entity';
-import { EmployerStatus } from './employer.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+
+import { Employer, EmployerStatus } from './employer.entity';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { formatPaginationMetaUtil } from 'src/common/utils/pagination.util';
 import { CreateEmployerDto, UpdateEmployerDto } from 'src/common/dto/employer.dto';
@@ -20,13 +19,13 @@ export class EmployerService {
         return { employers: rows, meta };
     }
 
+    async findByAttribute(attribute: Record<string, any>): Promise<Employer | null> {
+        return await this.employerRepository.findOne({ where: { ...attribute, status: EmployerStatus.ACTIVE } });
+    }
+
     async create(createEmployerDto: CreateEmployerDto) {
         const employer = this.employerRepository.create(createEmployerDto);
         return await this.employerRepository.save(employer);
-    }
-
-    async findByAttribute(attribute: Record<string, any>): Promise<Employer | null> {
-        return await this.employerRepository.findOne({ where: { ...attribute, status: EmployerStatus.ACTIVE } });
     }
 
     async update(employer: Employer, updateData: UpdateEmployerDto): Promise<Employer> {
