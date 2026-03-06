@@ -1,5 +1,5 @@
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { Controller, Get, HttpStatus, Query, Body, Post, Param, Put, Patch, Delete } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Query, Body, Post, Param, Patch, Delete } from '@nestjs/common';
 
 import { Employer } from './employer.entity';
 import { EmployerService } from './employer.service';
@@ -28,6 +28,19 @@ export class EmployerController {
         };
     }
 
+    @Get(':id')
+    @ApiOperation({ summary: 'Endpoint(API) for retrieving employer by ID' })
+    @ApiResponse({ status: HttpStatus.OK, description: 'Employer retrieved successfully.' })
+    async getEmployerById(@Param('id', CheckUUIDPipe, CheckEmployerParamPipe('id')) employer: Employer): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: Employer }> {
+        
+        return {
+            message: 'Employer retrieved successfully.',
+            statusCode: HttpStatus.OK,
+            success: true,
+            data: employer
+        };
+    }
+
     @Post()
     @ApiOperation({ summary: 'Endpoint(API) for creating employer' })
     @ApiResponse({ status: HttpStatus.CREATED, description: 'Employer created successfully.' })
@@ -41,19 +54,6 @@ export class EmployerController {
             data: employer
         };
 
-    }
-
-    @Get(':id')
-    @ApiOperation({ summary: 'Endpoint(API) for retrieving employer by ID' })
-    @ApiResponse({ status: HttpStatus.OK, description: 'Employer retrieved successfully.' })
-    async getEmployerById(@Param('id', CheckUUIDPipe, CheckEmployerParamPipe('id')) employer: Employer): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: Employer }> {
-        
-        return {
-            message: 'Employer retrieved successfully.',
-            statusCode: HttpStatus.OK,
-            success: true,
-            data: employer
-        };
     }
 
     @Patch(':id')

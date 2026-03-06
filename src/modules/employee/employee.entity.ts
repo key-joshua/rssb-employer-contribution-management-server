@@ -28,6 +28,7 @@ export class Employee {
   @Column({ type: 'date' })
   hireDate!: Date;
 
+  @Index()
   @Column({ type: 'numeric', precision: 12, scale: 2 })
   grossSalary!: number;
 

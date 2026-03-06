@@ -31,7 +31,7 @@ export class Declaration {
   status!: DeclarationStatus;
 
   @Column({ type: 'timestamp', nullable: true })
-  submittedAt!: Date;
+  submittedAt?: Date;
 
   @CreateDateColumn()
   createdAt!: Date;
