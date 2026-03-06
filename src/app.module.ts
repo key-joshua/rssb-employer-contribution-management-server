@@ -7,14 +7,16 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { HealthModule } from './modules/health.module';
 import { databaseConfig } from './database/database.config';
 import { RateLimitGuard } from './common/guards/rate-limit.guard';
+import { EmployerModule } from './modules/employer/employer.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    ThrottlerModule.forRoot([{ ttl: 60000, limit: 5 }]),
-    TypeOrmModule.forRoot({ ...databaseConfig, autoLoadEntities: true, }),
+    TypeOrmModule.forRoot({ ...databaseConfig, autoLoadEntities: true }),
+    ThrottlerModule.forRoot([{ ttl: Number(process.env.RATE_LIMIT_TTL) || 60000, limit: Number(process.env.RATE_LIMIT_MAX) || 5 }]),
 
-    HealthModule
+    HealthModule,
+    EmployerModule,
   ],
 
   providers: [

@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
@@ -11,6 +12,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.enableCors({ origin: '*' });
   app.useGlobalFilters(new NotFoundFilter(), new RateLimitFilter());
+  app.useGlobalPipes( new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
 
   const config = new DocumentBuilder()
     .setDescription(process.env.SWAGGER_API_DESCRIPTION ?? 'SWAGGER_API_DESCRIPTION')
@@ -20,7 +22,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
-
 
   await app.listen(process.env.PORT ?? 3000);
   console.log(`🚀 ${process.env.APP_NAME}'S RUNNING ON PORT ${process.env.PORT ?? 3000}`);

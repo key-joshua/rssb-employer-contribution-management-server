@@ -22,7 +22,7 @@ export class Employer {
     @Column({ type: 'varchar', length: 50 })
     tin!: string;
 
-    @Column({ type: 'varchar', length: 100, nullable: true })
+    @Column({ type: 'varchar', length: 100 })
     sector!: string;
 
     @Index()
