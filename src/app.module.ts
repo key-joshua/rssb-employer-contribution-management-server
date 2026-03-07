@@ -10,6 +10,7 @@ import { RateLimitGuard } from './common/guards/rate-limit.guard';
 import { EmployerModule } from './modules/employer/employer.module';
 import { EmployeeModule } from './modules/employee/employee.module';
 import { DeclarationModule } from './modules/declaration/declaration.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { DeclarationModule } from './modules/declaration/declaration.module';
     EmployerModule,
     EmployeeModule,
     DeclarationModule,
+    AuthModule,
   ],
 
   providers: [
