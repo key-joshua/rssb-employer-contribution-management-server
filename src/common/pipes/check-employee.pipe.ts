@@ -13,9 +13,7 @@ export function CheckEmployeeFieldPipe(fields: string[]): Type<PipeTransform> {
         const employeeExist = await this.employeeService.findByAttribute({ [field]: value[field] });
 
         if (employeeExist) {
-          throw new ConflictException(
-            `Employee with ${field} "${value[field]}" already exists`,
-          );
+          throw new ConflictException( `Employee with ${field} "${value[field]}" already exists`, );
         }
       }
 

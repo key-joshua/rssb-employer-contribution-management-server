@@ -1,4 +1,3 @@
-import { isUUID } from 'class-validator';
 import { EmployerService } from 'src/modules/employer/employer.service';
 import { PipeTransform, Injectable, ConflictException, BadRequestException, mixin, Type, } from '@nestjs/common';
 
@@ -27,10 +26,9 @@ export function CheckEmployerFieldPipe(fields: string[]): Type<PipeTransform> {
   return mixin(CheckEmployerFieldPipeMixin);
 }
 
-
 export function CheckEmployerParamPipe(field: string) {
   @Injectable()
-  class CheckEmployerParamPipeMixin implements PipeTransform {
+  class CheckParamPipeMixin implements PipeTransform {
     constructor(public readonly employerService: EmployerService) {}
 
     async transform(value: string) {
@@ -44,16 +42,5 @@ export function CheckEmployerParamPipe(field: string) {
     }
   }
 
-  return mixin(CheckEmployerParamPipeMixin);
+  return mixin(CheckParamPipeMixin);
 }
-
-@Injectable()
-export class CheckUUIDPipe implements PipeTransform {
-  transform(value: string) {
-    if (!isUUID(value)) {
-      throw new BadRequestException(`Invalid ID found: ${value}.`);
-    }
-    return value;
-  }
-}
-
