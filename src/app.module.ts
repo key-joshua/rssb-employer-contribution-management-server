@@ -9,6 +9,7 @@ import { databaseConfig } from './database/database.config';
 import { RateLimitGuard } from './common/guards/rate-limit.guard';
 import { EmployerModule } from './modules/employer/employer.module';
 import { EmployeeModule } from './modules/employee/employee.module';
+import { DeclarationModule } from './modules/declaration/declaration.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { EmployeeModule } from './modules/employee/employee.module';
     HealthModule,
     EmployerModule,
     EmployeeModule,
+    DeclarationModule,
   ],
 
   providers: [

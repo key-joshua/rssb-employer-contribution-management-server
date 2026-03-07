@@ -5,8 +5,9 @@ import { Employer } from './employer.entity';
 import { EmployerService } from './employer.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { PaginationMeta } from 'src/common/utils/pagination.util';
+import { CheckUUIDPipe } from 'src/common/pipes/check-param-pipe';
 import { CreateEmployerDto, UpdateEmployerDto } from 'src/common/dto/employer.dto';
-import { CheckEmployerFieldPipe, CheckEmployerParamPipe, CheckUUIDPipe } from 'src/common/pipes/check-employer.pipe';
+import { CheckEmployerFieldPipe, CheckEmployerParamPipe } from 'src/common/pipes/check-employer.pipe';
 
 
 @ApiTags('Employers')
@@ -96,5 +97,4 @@ export class EmployerController {
             data: suspendedEmployer
         };
     }
-
 }
