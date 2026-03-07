@@ -11,7 +11,7 @@
 
 ### SETUP DATABASE AND RUN APPLICATION
 
-1. installed all the required dependencies with npm install
+1. installed all the required dependencies with ```npm install```
 
 2. Create ```.env``` from `.env.example` then add values to all variables.
 
