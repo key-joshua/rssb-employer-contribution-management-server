@@ -1,21 +1,27 @@
-import { PipeTransform, Injectable, ConflictException, mixin, Type, BadRequestException } from '@nestjs/common';
+import { PipeTransform, Injectable, ConflictException, mixin, Type, BadRequestException, Inject } from '@nestjs/common';
 import { Declaration, DeclarationStatus } from 'src/modules/declaration/declaration.entity';
 import { DeclarationService } from 'src/modules/declaration/declaration.service';
+import { REQUEST } from '@nestjs/core';
 
 export function CheckDeclarationFieldPipe(fields: string[]): Type<PipeTransform> {
   @Injectable()
   class CheckDeclarationFieldPipeMixin implements PipeTransform {
-    constructor(public readonly declarationService: DeclarationService) {}
+    constructor(private readonly declarationService: DeclarationService, @Inject(REQUEST) private readonly request: Request) {}
 
     async transform(value: any) {
-      const employerId = 'd99f3060-90ee-4b46-afe7-dfea56e0d04a';
+      const req: any = this.request;
+      const employerId = req.user?.id;
+
+      if (!employerId) {
+        throw new BadRequestException('Invalid access token. Employer information is missing.');
+      }
 
       for (const field of fields) {
         if (value[field] === undefined) continue;
 
-        const declarationExist = await this.declarationService.findByAttribute({ employer: { id: employerId }, [field]: value[field], });
+        const declarationExist = await this.declarationService.findByAttribute({ employer: { id: employerId }, [field]: value[field] });
         if (declarationExist) {
-          throw new ConflictException( `Declaration with ${field} "${value[field]}" already exists` );
+          throw new ConflictException(`Declaration with ${field} "${value[field]}" already exists`);
         }
       }
 

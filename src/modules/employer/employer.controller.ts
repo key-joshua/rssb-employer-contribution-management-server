@@ -1,3 +1,5 @@
+import { Req, UseGuards } from '@nestjs/common';
+import { JwtAuthGuardMixin } from 'src/common/guards/jwt-auth.guard';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Controller, Get, HttpStatus, Query, Body, Post, Param, Patch, Delete } from '@nestjs/common';
 
@@ -9,13 +11,13 @@ import { CheckUUIDPipe } from 'src/common/pipes/check-param-pipe';
 import { CreateEmployerDto, UpdateEmployerDto } from 'src/common/dto/employer.dto';
 import { CheckEmployerFieldPipe, CheckEmployerParamPipe } from 'src/common/pipes/check-employer.pipe';
 
-
 @ApiTags('Employers')
 @Controller('employers')
 export class EmployerController {
     constructor(private readonly employerService: EmployerService) {}
 
     @Get()
+    @UseGuards(JwtAuthGuardMixin(['admin', 'employer']))
     @ApiOperation({ summary: 'Endpoint(API) for retrieving all employers' })
     @ApiResponse({ status: HttpStatus.OK, description: 'Employers retrieved successfully.' })
     async getEmployers(@Query() pagination: PaginationDto): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: { employers: Employer[]; meta: PaginationMeta } }> {
@@ -30,6 +32,7 @@ export class EmployerController {
     }
 
     @Get(':id')
+    @UseGuards(JwtAuthGuardMixin(['admin', 'employer']))
     @ApiOperation({ summary: 'Endpoint(API) for retrieving employer by ID' })
     @ApiResponse({ status: HttpStatus.OK, description: 'Employer retrieved successfully.' })
     async getEmployerById(@Param('id', CheckUUIDPipe, CheckEmployerParamPipe('id')) employer: Employer): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: Employer }> {
@@ -43,10 +46,11 @@ export class EmployerController {
     }
 
     @Post()
+    @UseGuards(JwtAuthGuardMixin(['employer']))
     @ApiOperation({ summary: 'Endpoint(API) for creating employer' })
     @ApiResponse({ status: HttpStatus.CREATED, description: 'Employer created successfully.' })
-    async createEmployer(@Body(CheckEmployerFieldPipe(['name', 'tin'])) body: CreateEmployerDto): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: Employer }> {
-        const employer = await this.employerService.create(body);
+    async createEmployer(@Req() req, @Body(CheckEmployerFieldPipe(['name', 'tin'])) body: CreateEmployerDto): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: Employer }> {
+        const employer = await this.employerService.create({ ...body, user: { id: req.user.id }} as any);
 
         return {
             message: 'Employer created successfully.',
@@ -54,10 +58,10 @@ export class EmployerController {
             success: true,
             data: employer
         };
-
     }
 
     @Patch(':id')
+    @UseGuards(JwtAuthGuardMixin(['admin', 'employer']))
     @ApiOperation({ summary: 'Endpoint(API) for updating employer by ID' })
     @ApiResponse({ status: HttpStatus.OK, description: 'Employer updated successfully.' })
     async updateEmployer( @Param('id', CheckUUIDPipe, CheckEmployerParamPipe('id')) employer: Employer, @Body(CheckEmployerFieldPipe(['name', 'tin'])) updateData: UpdateEmployerDto ): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: Employer }> {
@@ -72,6 +76,7 @@ export class EmployerController {
     }
 
     @Delete(':id')
+    @UseGuards(JwtAuthGuardMixin(['admin']))
     @ApiOperation({ summary: 'Endpoint(API) for deleting an employer by ID' })
     @ApiResponse({ status: HttpStatus.OK, description: 'Employer deleted successfully.' })
     async deleteEmployer(@Param('id', CheckUUIDPipe, CheckEmployerParamPipe('id')) employer: Employer): Promise<{ message: string; statusCode: HttpStatus; success: boolean }> {
@@ -85,6 +90,7 @@ export class EmployerController {
     }
 
     @Patch('/suspend/:id')
+    @UseGuards(JwtAuthGuardMixin(['admin', 'employer']))
     @ApiOperation({ summary: 'Endpoint(API) for suspending an employer by ID' })
     @ApiResponse({ status: HttpStatus.OK, description: 'Employer suspended successfully.' })
     async suspendEmployer(@Param('id', CheckUUIDPipe, CheckEmployerParamPipe('id')) employer: Employer): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: Employer }> {

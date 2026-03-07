@@ -1,12 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, OneToMany, Index } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, OneToMany, Index, JoinColumn, OneToOne } from 'typeorm';
 import { Declaration } from '../declaration/declaration.entity';
 import { Employee } from '../employee/employee.entity';
+import { User } from '../auth/user.entity';
 
 export enum EmployerStatus { ACTIVE = 'active', SUSPENDED = 'suspended' }
 
 @Entity('employers')
 @Unique(['tin'])
 export class Employer {
+    @OneToOne(() => User, user => user.employer)
+    @JoinColumn()
+    user!: User;
+
     @OneToMany(() => Employee, employee => employee.employer)
     employees!: Employee[];
 

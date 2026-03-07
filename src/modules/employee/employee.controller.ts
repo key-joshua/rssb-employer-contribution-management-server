@@ -1,3 +1,5 @@
+import { Req, UseGuards } from '@nestjs/common';
+import { JwtAuthGuardMixin } from 'src/common/guards/jwt-auth.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, HttpStatus, Post, Query } from '@nestjs/common';
 
@@ -15,10 +17,11 @@ export class EmployeeController {
     constructor(private readonly employeeService: EmployeeService) {}
 
     @Get()
+    @UseGuards(JwtAuthGuardMixin(['employer']))
     @ApiOperation({ summary: 'Endpoint(API) for retrieving all employees' })
     @ApiResponse({ status: HttpStatus.OK, description: 'Employees retrieved successfully.' })
-    async getEmployees(@Query() pagination: PaginationDto): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: { employees: Employee[]; meta: PaginationMeta } }> {
-        const employer =  { id: 'd99f3060-90ee-4b46-afe7-dfea56e0d04a' } as any;
+    async getEmployees(@Req() req, @Query() pagination: PaginationDto): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: { employees: Employee[]; meta: PaginationMeta } }> {
+        const employer =  { id: req.user.id } as any;
         const { employees, meta } = await this.employeeService.findAll(employer, pagination);
 
         return {
@@ -30,10 +33,11 @@ export class EmployeeController {
     }
 
     @Post()
+    @UseGuards(JwtAuthGuardMixin(['employer']))
     @ApiOperation({ summary: 'Endpoint(API) for creating employee' })
     @ApiResponse({ status: HttpStatus.CREATED, description: 'Employee created successfully.' })
-    async createEmployee(@Body(CheckEmployeeFieldPipe(['nationalId'])) body: CreateEmployeeDto): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: Employee }> {
-        const employerId = 'd99f3060-90ee-4b46-afe7-dfea56e0d04a' as string;
+    async createEmployee(@Req() req, @Body(CheckEmployeeFieldPipe(['nationalId'])) body: CreateEmployeeDto): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: Employee }> {
+        const employerId = req.user.id as string;
         const employee = await this.employeeService.create({ ...body, employer: { id: employerId } as Employer, dateOfBirth: new Date(body.dateOfBirth), hireDate: new Date(body.hireDate) });
 
         return {
