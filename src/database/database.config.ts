@@ -2,6 +2,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
 
+import { User } from 'src/modules/auth/user.entity';
 import { Employer } from 'src/modules/employer/employer.entity';
 import { Employee } from 'src/modules/employee/employee.entity';
 import { Declaration } from 'src/modules/declaration/declaration.entity';
@@ -19,5 +20,5 @@ export const databaseConfig: TypeOrmModuleOptions & DataSourceOptions = {
   username: process.env.DB_POSTGRESQL_USERNAME,
   password: process.env.DB_POSTGRESQL_PASSWORD,
   database: process.env.DB_POSTGRESQL_DATABASE,
-  entities: [Employer, Employee, Declaration, ContributionLine],
+  entities: [User, Employer, Employee, Declaration, ContributionLine],
 };

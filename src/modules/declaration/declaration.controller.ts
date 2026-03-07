@@ -1,3 +1,5 @@
+import { Req, UseGuards } from '@nestjs/common';
+import { JwtAuthGuardMixin } from 'src/common/guards/jwt-auth.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
 
@@ -32,10 +34,11 @@ export class DeclarationController {
     }
     
     @Get('/employer')
+    @UseGuards(JwtAuthGuardMixin(['employer']))
     @ApiOperation({ summary: 'Endpoint(API) for retrieving all employer declarations' })
     @ApiResponse({ status: HttpStatus.OK, description: 'Employer declarations retrieved successfully.' })
-    async getEmployerDeclarations(@Query() pagination: PaginationDto): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: { declarations: Declaration[]; meta: PaginationMeta } }> {
-        const employer = { id: 'd99f3060-90ee-4b46-afe7-dfea56e0d04a' } as any;
+    async getEmployerDeclarations(@Req() req, @Query() pagination: PaginationDto): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: { declarations: Declaration[]; meta: PaginationMeta } }> {
+        const employer = { id: req.user.id } as any;
         const { declarations, meta } = await this.declarationService.findEmployerDeclarations(employer, pagination);
         
         return {
@@ -59,10 +62,11 @@ export class DeclarationController {
     }
     
     @Post()
+    @UseGuards(JwtAuthGuardMixin(['employer']))
     @ApiOperation({ summary: 'Endpoint(API) for creating declaration' })
     @ApiResponse({ status: HttpStatus.CREATED, description: 'Declaration created successfully.' })
-    async createDeclaration(@Body(CheckDeclarationFieldPipe(['period', 'paymentNumber'])) body: CreateDeclarationDto): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: Declaration }> {
-        const employerId = 'd99f3060-90ee-4b46-afe7-dfea56e0d04a';
+    async createDeclaration(@Req() req, @Body(CheckDeclarationFieldPipe(['period', 'paymentNumber'])) body: CreateDeclarationDto): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: Declaration }> {
+        const employerId = req.user.id as string;
         const declaration = await this.declarationService.create({ ...body, employer: { id: employerId } as Employer });
 
         const employerEmployees = await this.declarationService.findEmployerEmployees({ id: employerId } as Employer);
@@ -91,6 +95,7 @@ export class DeclarationController {
     }
 
     @Patch('/submit/:id')
+    @UseGuards(JwtAuthGuardMixin(['employer']))
     @ApiOperation({ summary: 'Endpoint(API) for submitting declaration' })
     @ApiResponse({ status: HttpStatus.OK, description: 'Declaration submitted successfully.' })
     async submitDeclaration(@Param('id', CheckUUIDPipe, CheckDeclarationParamPipe('id'), CheckDeclarationDraftPipe) declaration: Declaration): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: Declaration }> {
@@ -105,6 +110,7 @@ export class DeclarationController {
     }
 
     @Patch('/status/:id')
+    @UseGuards(JwtAuthGuardMixin(['admin']))
     @ApiOperation({ summary: 'Endpoint(API) for validating declaration status' })
     @ApiResponse({ status: HttpStatus.OK, description: 'Declaration status validated successfully.' })
     async validateDeclaration(@Param('id', CheckUUIDPipe, CheckDeclarationParamPipe('id'), CheckDeclarationSubmittedPipe) declaration: Declaration, @Body() body: ValidateDeclarationDto): Promise<{ message: string; statusCode: HttpStatus; success: boolean; data: Declaration }> {
