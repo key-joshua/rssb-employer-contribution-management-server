@@ -16,8 +16,23 @@
 2. Create ```.env``` from `.env.example` then add values to all variables.
 
 3. Setup database and run scripts below before start application server:
+    - First delete this file if already exist ("XXXXXXXXXXXXX-InitialMigration")
     - Run this command ```npm run database-migrations-create```
-    - Run this script ```npm run database-tables-delete```
     - Run this script ```npm run database-tables-create```
 
 4. Start application in development, run script  ```npm run start:dev```
+
+### TESTING APPLICATION FUNCTIONALITIES
+
+    - Registered admin(ADMIN):
+        {
+            "email": "admin@admin.com",
+            "password": "Admin@123"
+        }
+
+    - Registered user(EMPLOYER):
+        {
+            "email": "employer@employer.com",
+            "password": "Employer@123"
+        }
+    

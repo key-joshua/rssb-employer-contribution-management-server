@@ -21,7 +21,7 @@ export function JwtAuthGuardMixin(roles: string[]): Type<any> {
       }
 
       if (err || !user) {
-        throw new UnauthorizedException({ message: 'Access token is required', success: false, statusCode: 401 });
+        throw new UnauthorizedException({ message: 'Access token has expired', success: false, statusCode: 401 });
       }
 
       if (!roles.includes(user.role)) {

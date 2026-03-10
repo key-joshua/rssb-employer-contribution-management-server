@@ -27,7 +27,7 @@ export class Declaration {
   period!: string;
 
   @Index()
-  @Column({ type: 'enum', enum: DeclarationStatus, default: DeclarationStatus.DRAFT })
+  @Column({ type: 'enum', enum: DeclarationStatus, enumName: 'declarations_status_enum', default: DeclarationStatus.DRAFT })
   status!: DeclarationStatus;
 
   @Column({ type: 'timestamp', nullable: true })

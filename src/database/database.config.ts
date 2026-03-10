@@ -1,6 +1,7 @@
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { DataSourceOptions } from 'typeorm';
+import * as fs from 'fs';
 import * as dotenv from 'dotenv';
+import { DataSourceOptions } from 'typeorm';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 import { User } from 'src/modules/auth/user.entity';
 import { Employer } from 'src/modules/employer/employer.entity';
@@ -11,7 +12,6 @@ import { ContributionLine } from 'src/modules/contribution-line/contribution-lin
 dotenv.config();
 
 export const databaseConfig: TypeOrmModuleOptions & DataSourceOptions = {
-  ssl: false,
   logging: false,
   type: 'postgres',
   synchronize: false,
@@ -21,4 +21,5 @@ export const databaseConfig: TypeOrmModuleOptions & DataSourceOptions = {
   password: process.env.DB_POSTGRESQL_PASSWORD,
   database: process.env.DB_POSTGRESQL_DATABASE,
   entities: [User, Employer, Employee, Declaration, ContributionLine],
+  ssl: { ca: process.env.DB_POSTGRESQL_CERTIFICATE, rejectUnauthorized: false },
 };

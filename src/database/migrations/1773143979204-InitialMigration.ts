@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class InitialMigration1772883126406 implements MigrationInterface {
-    name = 'InitialMigration1772883126406'
+export class InitialMigration1773143979204 implements MigrationInterface {
+    name = 'InitialMigration1773143979204'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "employees" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "nationalId" character varying(50) NOT NULL, "name" character varying(255) NOT NULL, "dateOfBirth" date NOT NULL, "hireDate" date NOT NULL, "grossSalary" numeric(12,2) NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "employerId" uuid, CONSTRAINT "UQ_c761681a4195bebbd8a37c33432" UNIQUE ("nationalId"), CONSTRAINT "PK_b9535a98350d5b26e7eb0c26af4" PRIMARY KEY ("id"))`);
@@ -20,7 +20,7 @@ export class InitialMigration1772883126406 implements MigrationInterface {
         await queryRunner.query(`CREATE INDEX "IDX_8fa37b8799c5f295beb391a0cc" ON "employers" ("registrationDate") `);
         await queryRunner.query(`CREATE INDEX "IDX_368eb013319db2a84dce696163" ON "employers" ("status") `);
         await queryRunner.query(`CREATE TYPE "public"."users_role_enum" AS ENUM('employer', 'admin')`);
-        await queryRunner.query(`CREATE TABLE "users" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "email" character varying NOT NULL, "password" character varying NOT NULL, "role" "public"."users_role_enum" NOT NULL DEFAULT 'employer', "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "users" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "email" character varying(255) NOT NULL, "password" character varying(255) NOT NULL, "role" "public"."users_role_enum" NOT NULL DEFAULT 'employer', "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`);
         await queryRunner.query(`ALTER TABLE "employees" ADD CONSTRAINT "FK_d8c7b6425560b798d7cfc0fedb8" FOREIGN KEY ("employerId") REFERENCES "employers"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "contribution_lines" ADD CONSTRAINT "FK_82fad5b7bdd1c93eebee2cc999d" FOREIGN KEY ("employeeId") REFERENCES "employees"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "contribution_lines" ADD CONSTRAINT "FK_be368ef8b0d1870185e493d0957" FOREIGN KEY ("declarationId") REFERENCES "declarations"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
