@@ -13,6 +13,7 @@ export class HealthController {
       success: true,
       status: HttpStatus.OK,
       uptime: process.uptime(),
+      server: process.env.SERVER_ID,
       message: 'Welcome to employer contribution server. Server is running',
     };
   }

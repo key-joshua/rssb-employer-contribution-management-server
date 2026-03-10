@@ -35,7 +35,7 @@ export class Employer {
     registrationDate!: Date;
 
     @Index()
-    @Column({ type: 'enum', enum: EmployerStatus, default: EmployerStatus.ACTIVE })
+    @Column({ type: 'enum', enum: EmployerStatus, enumName: 'employers_status_enum', default: EmployerStatus.ACTIVE })
     status!: EmployerStatus;
 
     @CreateDateColumn()
