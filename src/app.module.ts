@@ -18,8 +18,8 @@ import { DeclarationModule } from './modules/declaration/declaration.module';
     TypeOrmModule.forRoot({ ...databaseConfig, autoLoadEntities: true }),
     ThrottlerModule.forRoot([{ ttl: Number(process.env.RATE_LIMIT_TTL) || 60000, limit: Number(process.env.RATE_LIMIT_MAX) || 5 }]),
 
-    AuthModule,
     HealthModule,
+    AuthModule,
     EmployerModule,
     EmployeeModule,
     DeclarationModule,
